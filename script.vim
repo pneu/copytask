@@ -1,11 +1,5 @@
 "" dairy copy script
 
-" check function available"{{{
-if !exists("*strftime")
-  finish
-endif
-"}}}
-
 " stack status"{{{
 let s:save_sxq = &shellxquote
 let s:save_ssl = &shellslash
@@ -19,10 +13,12 @@ let s:basename=expand('%:p:h')
 execute 'source ' . s:basename . '/etc/env.vim'
 execute 'source ' . s:basename . '/etc/cmdopt.vim'
 execute 'source ' . s:basename . '/etc/stdfunc.vim'
-let files=[]    " synced files
+" acquire copy object manipulation
+execute 'source ' . s:basename . '/lib/func.vim'
+call CopyTaskFiles()
 "}}}
 
-" read filename downloaded"{{{
+" get copy src"{{{
 let s:confs = split(glob('config/*.vim'))
 for s:config in s:confs
   execute 'source ' . s:config
@@ -30,15 +26,15 @@ endfor
 "}}}
 
 " do copy
-for file in files
-  let s:cmd = "copy ".copy_opt. ' ' . shellescape(file) ." ". shellescape(dest)
+for s:file in keys(CopyTaskFiles_Get())
+  let s:cmd = "copy " . copy_opt . ' ' .
+      \ shellescape(CopyTaskFiles_Get()[s:file].path)
+      \  ." ". shellescape(dest)
   call system(s:cmd)
 endfor
 
-
 " clean up and restore"{{{
-unlet files
-
+call CopyTaskFiles_destructor()
 execute 'cd ' . s:save_cwd
 set shellxquote=s:save_sxq
 if s:save_ssl == 0

@@ -1,4 +1,10 @@
 "" build filename
+" check function available"{{{
+if !exists("*strftime")
+  finish
+endif
+"}}}
+
 let s:timeout = 3     " sec
 let s:found=0
 
@@ -16,5 +22,5 @@ while s:expire>=localtime()
 endwhile
 
 if s:found
-  call add(files, s:file)
+  call CopyTaskFiles_Add(s:file)
 endif
