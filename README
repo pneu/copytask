@@ -1,0 +1,14 @@
+Add script if you want copy files.
+See config/sample*.vim.
+
+FILES
+=====
+  config/*.vim
+    user description
+  etc/*.vim
+    included files
+  lib
+  script.vim
+    implementation
+  run.bat
+    entry point
